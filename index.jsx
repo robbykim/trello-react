@@ -17,14 +17,12 @@ var List = function() {
   for (var i=0; i<5; i++) {
     cards.push(<Cards />);
   }
-  return (
-    <div className="list">{cards}</div> 
-  );
+  return (<div className="list">{cards}</div>);
 };
 
 var Cards = function() {
-  var title = "I'm a card!"
-  var description = "I'm a description for this card."
+  var title = "I'm a card!";
+  var description = "I'm a description for this card.";
   return (
     <div className="card">
       <div className="card-title">{title}</div>
