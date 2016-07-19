@@ -21,8 +21,8 @@ var List = function() {
 };
 
 var Cards = function() {
-  var title = "I'm a card!";
-  var description = "I'm a description for this card.";
+  var title = 'I\'m a card!';
+  var description = 'I\'m a description for this card.';
   return (
     <div className="card">
       <div className="card-title">{title}</div>
@@ -32,6 +32,5 @@ var Cards = function() {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log("loading content");
   ReactDOM.render(<Board />, document.getElementById('app'));
 });
