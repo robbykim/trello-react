@@ -50,52 +50,64 @@
 	var ReactDOM = __webpack_require__(33);
 	
 	/* ------- Components --------- */
-	var Board = function Board() {
+	var Board = function Board(props) {
 	  var lists = [];
-	  for (var i = 0; i < 5; i++) {
-	    lists.push(React.createElement(List, null));
+	  for (var i = 0; i < props.listTitle.length; i++) {
+	    lists.push(React.createElement(List, { title: props.listTitle[i] }));
 	  }
 	  return React.createElement(
 	    'div',
 	    { className: 'board' },
-	    lists
+	    React.createElement(
+	      'div',
+	      { className: 'board-name' },
+	      props.title
+	    ),
+	    React.createElement(
+	      'div',
+	      { className: 'list-list' },
+	      lists
+	    )
 	  );
 	};
 	
-	var List = function List() {
+	var List = function List(props) {
 	  var cards = [];
 	  for (var i = 0; i < 5; i++) {
-	    cards.push(React.createElement(Cards, null));
+	    cards.push(React.createElement(Card, { title: 'Card ' + (i + 1),
+	      description: 'I am card ' + (i + 1) }));
 	  }
 	  return React.createElement(
 	    'div',
 	    { className: 'list' },
-	    cards
+	    React.createElement(
+	      'div',
+	      { className: 'list-title' },
+	      props.title
+	    ),
+	    React.createElement(
+	      'div',
+	      { className: 'card-holder' },
+	      cards
+	    )
 	  );
 	};
 	
-	var Cards = function Cards() {
-	  var title = "I'm a card!";
-	  var description = "I'm a description for this card.";
+	var Card = function Card(props) {
 	  return React.createElement(
 	    'div',
 	    { className: 'card' },
 	    React.createElement(
 	      'div',
-	      { className: 'card-title' },
-	      title
-	    ),
-	    React.createElement(
-	      'div',
 	      { className: 'card-description' },
-	      description
+	      props.description
 	    )
 	  );
 	};
 	
 	document.addEventListener('DOMContentLoaded', function () {
-	  console.log("loading content");
-	  ReactDOM.render(React.createElement(Board, null), document.getElementById('app'));
+	  ReactDOM.render(React.createElement(Board, { title: 'Trello Board',
+	    listTitle: ['List 1', 'List 2', 'List 3', 'List 4', 'List 5'] }), document.getElementById('app'));
 	});
 
 /***/ },
