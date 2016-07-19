@@ -1,21 +1,39 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var Person = function() {
-  var name = 'Derek Zoolander';
-  var imageUrl = 'http://uifaces.com/assets/static/images/zoolander.jpg';
-  var job = 'Male model';
+/* ------- Components --------- */
+var Board = function() {
+  var lists = [];
+  for (var i=0; i<5; i++) {
+    lists.push(<List />);
+  }
   return (
-    <div className="person">
-      <div className="person-name">{name}</div>
-      <img className="person-img" src={imageUrl} />
-      <div className="person-job">
-        {job}
-      </div>
+    <div className="board">{lists}</div>
+  );
+};
+
+var List = function() {
+  var cards = [];
+  for (var i=0; i<5; i++) {
+    cards.push(<Cards />);
+  }
+  return (
+    <div className="list">{cards}</div> 
+  );
+};
+
+var Cards = function() {
+  var title = "I'm a card!"
+  var description = "I'm a description for this card."
+  return (
+    <div className="card">
+      <div className="card-title">{title}</div>
+      <div className="card-description">{description}</div>
     </div>
   );
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  ReactDOM.render(<Person />, document.getElementById('app'));
+  console.log("loading content");
+  ReactDOM.render(<Board />, document.getElementById('app'));
 });

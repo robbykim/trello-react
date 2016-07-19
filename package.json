@@ -10,7 +10,7 @@
     "watch": "npm run watch:html & npm run watch:js",
     "clean": "rm -rf build",
     "build:html": "npm run clean:html && cp index.html build/",
-    "watch:html": "npm run build:html && webpack --watch",
+    "watch:html": "npm run build:html && chokidar index.html -c 'npm run build:html'",
     "clean:html": "rm -f build/index.html",
     "build:js": "npm run clean:js && webpack",
     "watch:js": "npm run build:js && webpack --watch",
@@ -31,6 +31,7 @@
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
+    "chokidar-cli": "^1.2.0",
     "webpack": "^1.13.1"
   },
   "dependencies": {
