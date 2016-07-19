@@ -15,22 +15,43 @@ var Board = function(props) {
   );
 };
 
-var List = function(props) {
-  var cards = [];
-  for (var i = 0; i < 5; i++) {
-    cards.push(
-      <Card description={'I am card ' + (i + 1)} />
+var List = React.createClass({
+  getInitialState: function () {
+    return {
+      numCards: Math.floor((Math.random() * 6) + 1)
+    }
+  },
+  onAdd: function () {
+    this.setState({
+      numCards: this.state.numCards + 1
+    });
+  },
+  onDelete: function () {
+    if (this.state.numCards > 0) {
+      this.setState({
+        numCards: this.state.numCards - 1
+      });
+    }
+  },
+  render: function() {
+    var cards = [];
+    for (var i = 0; i < this.state.numCards; i++) {
+      cards.push(
+        <Card description={'I am card ' + (i + 1)} />
+      );
+    }
+    return (
+      <div className="list">
+        <div className="list-title">{this.props.title}</div>
+        <button className="add-button" onClick={this.onAdd}>+</button>
+        <button className="sub-button" onClick={this.onDelete}>-</button>
+        <div className="card-holder">
+          {cards}
+        </div>
+      </div>
     );
   }
-  return (
-    <div className="list">
-      <div className="list-title">{props.title}</div>
-      <div className="card-holder">
-        {cards}
-      </div>
-    </div>
-  );
-};
+});
 
 var Card = React.createClass({
    getInitialState: function() {

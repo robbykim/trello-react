@@ -71,26 +71,57 @@
 	  );
 	};
 	
-	var List = function List(props) {
-	  var cards = [];
-	  for (var i = 0; i < 5; i++) {
-	    cards.push(React.createElement(Card, { description: 'I am card ' + (i + 1) }));
+	var List = React.createClass({
+	  displayName: 'List',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      numCards: Math.floor(Math.random() * 6 + 1)
+	    };
+	  },
+	  onAdd: function onAdd() {
+	    this.setState({
+	      numCards: this.state.numCards + 1
+	    });
+	  },
+	  onDelete: function onDelete() {
+	    if (this.state.numCards > 0) {
+	      this.setState({
+	        numCards: this.state.numCards - 1
+	      });
+	    }
+	  },
+	  render: function render() {
+	    var cards = [];
+	    for (var i = 0; i < this.state.numCards; i++) {
+	      cards.push(React.createElement(Card, { description: 'I am card ' + (i + 1) }));
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'list' },
+	      React.createElement(
+	        'div',
+	        { className: 'list-title' },
+	        this.props.title
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'add-button', onClick: this.onAdd },
+	        '+'
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'sub-button', onClick: this.onDelete },
+	        '-'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'card-holder' },
+	        cards
+	      )
+	    );
 	  }
-	  return React.createElement(
-	    'div',
-	    { className: 'list' },
-	    React.createElement(
-	      'div',
-	      { className: 'list-title' },
-	      props.title
-	    ),
-	    React.createElement(
-	      'div',
-	      { className: 'card-holder' },
-	      cards
-	    )
-	  );
-	};
+	});
 	
 	var Card = React.createClass({
 	  displayName: 'Card',
