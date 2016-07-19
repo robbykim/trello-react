@@ -19,8 +19,7 @@ var List = function(props) {
   var cards = [];
   for (var i = 0; i < 5; i++) {
     cards.push(
-      <Card title={'Card '+ (i + 1)}
-            description={'I am card ' + (i + 1)} />
+      <Card description={'I am card ' + (i + 1)} />
     );
   }
   return (
@@ -33,13 +32,26 @@ var List = function(props) {
   );
 };
 
-var Card = function(props) {
-  return (
-    <div className="card">
-      <div className="card-description">{props.description}</div>
-    </div>
-  );
-};
+var Card = React.createClass({
+   getInitialState: function() {
+        return {
+            highlight: false
+        };
+    },
+   onClick: function() {
+        this.setState({
+            highlight: !this.state.highlight
+        });
+    },
+    render: function() {
+      var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
+      return (
+        <div className={classes} onClick={this.onClick}>
+          <div className="card-description">{this.props.description}</div>
+        </div>
+      );
+  },
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   ReactDOM.render(<Board title="Trello Board"

@@ -74,8 +74,7 @@
 	var List = function List(props) {
 	  var cards = [];
 	  for (var i = 0; i < 5; i++) {
-	    cards.push(React.createElement(Card, { title: 'Card ' + (i + 1),
-	      description: 'I am card ' + (i + 1) }));
+	    cards.push(React.createElement(Card, { description: 'I am card ' + (i + 1) }));
 	  }
 	  return React.createElement(
 	    'div',
@@ -93,17 +92,32 @@
 	  );
 	};
 	
-	var Card = function Card(props) {
-	  return React.createElement(
-	    'div',
-	    { className: 'card' },
-	    React.createElement(
+	var Card = React.createClass({
+	  displayName: 'Card',
+	
+	  getInitialState: function getInitialState() {
+	    return {
+	      highlight: false
+	    };
+	  },
+	  onClick: function onClick() {
+	    this.setState({
+	      highlight: !this.state.highlight
+	    });
+	  },
+	  render: function render() {
+	    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
+	    return React.createElement(
 	      'div',
-	      { className: 'card-description' },
-	      props.description
-	    )
-	  );
-	};
+	      { className: classes, onClick: this.onClick },
+	      React.createElement(
+	        'div',
+	        { className: 'card-description' },
+	        this.props.description
+	      )
+	    );
+	  }
+	});
 	
 	document.addEventListener('DOMContentLoaded', function () {
 	  ReactDOM.render(React.createElement(Board, { title: 'Trello Board',
