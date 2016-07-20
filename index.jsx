@@ -25,39 +25,30 @@ var ListContainer = React.createClass({
     }
   },
 
+  onDelClick: function (event) {
+    console.log('event', event.target.parentElement);
+    console.log('state', this.state.cards[0])
+  },
+
   onAddInputChange: function (event) {
     this.setState({text: event.target.value})
   },
 
   onAddClick: function (event) {
     event.preventDefault();
-    console.log('text', this.state.text);
-    this.setState({cards: this.state.cards.push(
-      <Card description={this.state.text} onChange={this.update} />)});
-    console.log('cards', this.state.cards);
-    
-
+    var testCards = this.state.cards.slice();
+    testCards.push(<Card description={this.state.text} onDelClick={this.onDelClick} />)
+    this.setState({cards: testCards,
+                   text: ''});
   },
 
   render: function () {
-    return <List title={this.props.title} 
-      cards={this.state.cards} 
-      onAddInputChange={this.onAddInputChange} 
+    return <List title={this.props.title}
+      cards={this.state.cards}
+      value={this.state.text}
+      onAddInputChange={this.onAddInputChange}
       onAddClick={this.onAddClick} />
   }
-
-  // onAdd: function () {
-  //   this.setState({
-  //     numCards: this.state.numCards + 1
-  //   });
-  // },
-  // onDelete: function () {
-  //   if (this.state.numCards > 0) {
-  //     this.setState({
-  //       numCards: this.state.numCards - 1
-  //     });
-  //   }
-  // },
 });
 
 var List = React.createClass({
@@ -70,8 +61,8 @@ var List = React.createClass({
           {this.props.cards}
         </div>
         <form>
-          <input type="text" onChange={this.props.onAddInputChange} />
-          <button type="submit" onClick={this.props.onAddClick}></button>
+          <input type="text" value={this.props.value} onChange={this.props.onAddInputChange} />
+          <button type="submit" onClick={this.props.onAddClick}>+</button>
         </form>
       </div>
     );
@@ -94,6 +85,7 @@ var Card = React.createClass({
       return (
         <div className={classes} onClick={this.onClick}>
           <div className="card-description">{this.props.description}</div>
+          <button onClick={this.props.onDelClick}>-</button>
         </div>
       );
   },

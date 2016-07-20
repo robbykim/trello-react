@@ -83,36 +83,30 @@
 	    };
 	  },
 	
+	  onDelClick: function onDelClick(event) {
+	    console.log('event', event.target.parentElement);
+	    console.log('state', this.state.cards[0]);
+	  },
+	
 	  onAddInputChange: function onAddInputChange(event) {
 	    this.setState({ text: event.target.value });
 	  },
 	
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
-	    console.log('text', this.state.text);
-	    this.setState({ cards: this.state.cards.push(React.createElement(Card, { description: this.state.text, onChange: this.update })) });
-	    console.log('cards', this.state.cards);
+	    var testCards = this.state.cards.slice();
+	    testCards.push(React.createElement(Card, { description: this.state.text, onDelClick: this.onDelClick }));
+	    this.setState({ cards: testCards,
+	      text: '' });
 	  },
 	
 	  render: function render() {
 	    return React.createElement(List, { title: this.props.title,
 	      cards: this.state.cards,
+	      value: this.state.text,
 	      onAddInputChange: this.onAddInputChange,
 	      onAddClick: this.onAddClick });
 	  }
-	
-	  // onAdd: function () {
-	  //   this.setState({
-	  //     numCards: this.state.numCards + 1
-	  //   });
-	  // },
-	  // onDelete: function () {
-	  //   if (this.state.numCards > 0) {
-	  //     this.setState({
-	  //       numCards: this.state.numCards - 1
-	  //     });
-	  //   }
-	  // },
 	});
 	
 	var List = React.createClass({
@@ -136,8 +130,12 @@
 	      React.createElement(
 	        'form',
 	        null,
-	        React.createElement('input', { type: 'text', onChange: this.props.onAddInputChange }),
-	        React.createElement('button', { type: 'submit', onClick: this.props.onAddClick })
+	        React.createElement('input', { type: 'text', value: this.props.value, onChange: this.props.onAddInputChange }),
+	        React.createElement(
+	          'button',
+	          { type: 'submit', onClick: this.props.onAddClick },
+	          '+'
+	        )
 	      )
 	    );
 	  }
@@ -165,6 +163,11 @@
 	        'div',
 	        { className: 'card-description' },
 	        this.props.description
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.props.onDelClick },
+	        '-'
 	      )
 	    );
 	  }
