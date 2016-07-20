@@ -51,10 +51,12 @@
 	
 	/* ------- Components --------- */
 	var Board = function Board(props) {
+	
 	  var lists = [];
 	  for (var i = 0; i < props.listTitle.length; i++) {
-	    lists.push(React.createElement(List, { title: props.listTitle[i] }));
+	    lists.push(React.createElement(ListContainer, { title: props.listTitle[i] }));
 	  }
+	
 	  return React.createElement(
 	    'div',
 	    { className: 'board' },
@@ -71,31 +73,53 @@
 	  );
 	};
 	
-	var List = React.createClass({
-	  displayName: 'List',
-
+	var ListContainer = React.createClass({
+	  displayName: 'ListContainer',
+	
 	  getInitialState: function getInitialState() {
 	    return {
-	      numCards: Math.floor(Math.random() * 6 + 1)
+	      text: '',
+	      cards: []
 	    };
 	  },
-	  onAdd: function onAdd() {
-	    this.setState({
-	      numCards: this.state.numCards + 1
-	    });
+	
+	  onAddInputChange: function onAddInputChange(event) {
+	    this.setState({ text: event.target.value });
 	  },
-	  onDelete: function onDelete() {
-	    if (this.state.numCards > 0) {
-	      this.setState({
-	        numCards: this.state.numCards - 1
-	      });
-	    }
+	
+	  onAddClick: function onAddClick(event) {
+	    event.preventDefault();
+	    console.log('text', this.state.text);
+	    this.setState({ cards: this.state.cards.push(React.createElement(Card, { description: this.state.text, onChange: this.update })) });
+	    console.log('cards', this.state.cards);
 	  },
+	
 	  render: function render() {
-	    var cards = [];
-	    for (var i = 0; i < this.state.numCards; i++) {
-	      cards.push(React.createElement(Card, { description: 'I am card ' + (i + 1) }));
-	    }
+	    return React.createElement(List, { title: this.props.title,
+	      cards: this.state.cards,
+	      onAddInputChange: this.onAddInputChange,
+	      onAddClick: this.onAddClick });
+	  }
+	
+	  // onAdd: function () {
+	  //   this.setState({
+	  //     numCards: this.state.numCards + 1
+	  //   });
+	  // },
+	  // onDelete: function () {
+	  //   if (this.state.numCards > 0) {
+	  //     this.setState({
+	  //       numCards: this.state.numCards - 1
+	  //     });
+	  //   }
+	  // },
+	});
+	
+	var List = React.createClass({
+	  displayName: 'List',
+	
+	
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'list' },
@@ -105,19 +129,15 @@
 	        this.props.title
 	      ),
 	      React.createElement(
-	        'button',
-	        { className: 'add-button', onClick: this.onAdd },
-	        '+'
-	      ),
-	      React.createElement(
-	        'button',
-	        { className: 'sub-button', onClick: this.onDelete },
-	        '-'
-	      ),
-	      React.createElement(
 	        'div',
 	        { className: 'card-holder' },
-	        cards
+	        this.props.cards
+	      ),
+	      React.createElement(
+	        'form',
+	        null,
+	        React.createElement('input', { type: 'text', onChange: this.props.onAddInputChange }),
+	        React.createElement('button', { type: 'submit', onClick: this.props.onAddClick })
 	      )
 	    );
 	  }

@@ -2,11 +2,13 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 /* ------- Components --------- */
-var Board = function(props) {
+var Board = function (props) {
+
   var lists = [];
   for (var i = 0; i < props.listTitle.length; i++) {
-    lists.push(<List title={props.listTitle[i]}/>);
+    lists.push(<ListContainer title={props.listTitle[i]} />);
   }
+
   return (
     <div className="board">
       <div className="board-name">{props.title}</div>
@@ -15,39 +17,62 @@ var Board = function(props) {
   );
 };
 
-var List = React.createClass({
+var ListContainer = React.createClass({
   getInitialState: function () {
     return {
-      numCards: Math.floor((Math.random() * 6) + 1)
+      text: '',
+      cards: []
     }
   },
-  onAdd: function () {
-    this.setState({
-      numCards: this.state.numCards + 1
-    });
+
+  onAddInputChange: function (event) {
+    this.setState({text: event.target.value})
   },
-  onDelete: function () {
-    if (this.state.numCards > 0) {
-      this.setState({
-        numCards: this.state.numCards - 1
-      });
-    }
+
+  onAddClick: function (event) {
+    event.preventDefault();
+    console.log('text', this.state.text);
+    this.setState({cards: this.state.cards.push(
+      <Card description={this.state.text} onChange={this.update} />)});
+    console.log('cards', this.state.cards);
+    
+
   },
+
+  render: function () {
+    return <List title={this.props.title} 
+      cards={this.state.cards} 
+      onAddInputChange={this.onAddInputChange} 
+      onAddClick={this.onAddClick} />
+  }
+
+  // onAdd: function () {
+  //   this.setState({
+  //     numCards: this.state.numCards + 1
+  //   });
+  // },
+  // onDelete: function () {
+  //   if (this.state.numCards > 0) {
+  //     this.setState({
+  //       numCards: this.state.numCards - 1
+  //     });
+  //   }
+  // },
+});
+
+var List = React.createClass({
+
   render: function() {
-    var cards = [];
-    for (var i = 0; i < this.state.numCards; i++) {
-      cards.push(
-        <Card description={'I am card ' + (i + 1)} />
-      );
-    }
     return (
       <div className="list">
         <div className="list-title">{this.props.title}</div>
-        <button className="add-button" onClick={this.onAdd}>+</button>
-        <button className="sub-button" onClick={this.onDelete}>-</button>
         <div className="card-holder">
-          {cards}
+          {this.props.cards}
         </div>
+        <form>
+          <input type="text" onChange={this.props.onAddInputChange} />
+          <button type="submit" onClick={this.props.onAddClick}></button>
+        </form>
       </div>
     );
   }
