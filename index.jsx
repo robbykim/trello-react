@@ -21,13 +21,18 @@ var ListContainer = React.createClass({
   getInitialState: function () {
     return {
       text: '',
-      cards: []
+      cards: [],
+      counter: 0
     }
   },
 
-  onDelClick: function (event) {
-    console.log('event', event.target.parentElement);
-    console.log('state', this.state.cards[0])
+  onDelClick: function (event, id) {
+    var tempCardsArray = this.state.cards.filter(function(card) {
+      console.log('card.props.id', card.props.id);
+      return id !== card.props.id;
+    });
+    console.log('id', id);
+    this.setState({cards: tempCardsArray});
   },
 
   onAddInputChange: function (event) {
@@ -36,10 +41,14 @@ var ListContainer = React.createClass({
 
   onAddClick: function (event) {
     event.preventDefault();
+    console.log('this.state.text', this.state.text);
     var testCards = this.state.cards.slice();
-    testCards.push(<Card description={this.state.text} onDelClick={this.onDelClick} />)
+    testCards.push(<Card description={this.state.text} id={this.state.counter} onDelClick={this.onDelClick} />)
+
+    var tempCounter = this.state.counter + 1;
+    console.log('testCards', testCards);
     this.setState({cards: testCards,
-                   text: ''});
+                   text: '', counter: tempCounter});
   },
 
   render: function () {
@@ -80,12 +89,16 @@ var Card = React.createClass({
             highlight: !this.state.highlight
         });
     },
+    onDelete: function(event) {
+      event.stopPropagation();
+      this.props.onDelClick(event, this.props.id);
+    },
     render: function() {
       var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
       return (
         <div className={classes} onClick={this.onClick}>
           <div className="card-description">{this.props.description}</div>
-          <button onClick={this.props.onDelClick}>-</button>
+          <button onClick={this.onDelete}>-</button>
         </div>
       );
   },

@@ -79,13 +79,18 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      text: '',
-	      cards: []
+	      cards: [],
+	      counter: 0
 	    };
 	  },
 	
-	  onDelClick: function onDelClick(event) {
-	    console.log('event', event.target.parentElement);
-	    console.log('state', this.state.cards[0]);
+	  onDelClick: function onDelClick(event, id) {
+	    var tempCardsArray = this.state.cards.filter(function (card) {
+	      console.log('card.props.id', card.props.id);
+	      return id !== card.props.id;
+	    });
+	    console.log('id', id);
+	    this.setState({ cards: tempCardsArray });
 	  },
 	
 	  onAddInputChange: function onAddInputChange(event) {
@@ -94,10 +99,14 @@
 	
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
+	    console.log('this.state.text', this.state.text);
 	    var testCards = this.state.cards.slice();
-	    testCards.push(React.createElement(Card, { description: this.state.text, onDelClick: this.onDelClick }));
+	    testCards.push(React.createElement(Card, { description: this.state.text, id: this.state.counter, onDelClick: this.onDelClick }));
+	
+	    var tempCounter = this.state.counter + 1;
+	    console.log('testCards', testCards);
 	    this.setState({ cards: testCards,
-	      text: '' });
+	      text: '', counter: tempCounter });
 	  },
 	
 	  render: function render() {
@@ -154,6 +163,10 @@
 	      highlight: !this.state.highlight
 	    });
 	  },
+	  onDelete: function onDelete(event) {
+	    event.stopPropagation();
+	    this.props.onDelClick(event, this.props.id);
+	  },
 	  render: function render() {
 	    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
 	    return React.createElement(
@@ -166,7 +179,7 @@
 	      ),
 	      React.createElement(
 	        'button',
-	        { onClick: this.props.onDelClick },
+	        { onClick: this.onDelete },
 	        '-'
 	      )
 	    );
