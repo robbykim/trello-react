@@ -186,6 +186,7 @@
 	  }
 	});
 	
+	/* Runs when page is done loading. */
 	document.addEventListener('DOMContentLoaded', function () {
 	  ReactDOM.render(React.createElement(Board, { title: 'Trello Board',
 	    listTitle: ['List 1', 'List 2', 'List 3', 'List 4', 'List 5'] }), document.getElementById('app'));
