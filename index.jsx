@@ -2,20 +2,51 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 /* ------- Components --------- */
-var Board = function (props) {
-
-  var lists = [];
-  for (var i = 0; i < props.listTitle.length; i++) {
-    lists.push(<ListContainer title={props.listTitle[i]} />);
+var BoardContainer = React.createClass({
+  getInitialState: function () {
+    return {
+      listTitle: '',
+      lists: [],
+      counter: 0
+    }
+  },
+  onAddInputChange: function (event) {
+    this.setState({listTitle: event.target.value})
+  },
+  onAddClick: function (event) {
+    event.preventDefault();
+    var tempLists = this.state.lists.slice();
+    tempLists.push(<ListContainer title={this.state.listTitle} id={this.state.counter}/>);
+    var tempCounter = this.state.counter + 1;
+    this.setState({
+      listTitle: '',
+      lists: tempLists,
+      counter: tempCounter});
+  },
+  render: function () {
+    return <Board title="Trello Board"
+      onAddInputChange={this.onAddInputChange}
+      onAddClick={this.onAddClick}
+      lists={this.state.lists}
+      listTitle={this.state.listTitle}
+      />
   }
+});
 
-  return (
-    <div className="board">
-      <div className="board-name">{props.title}</div>
-      <div className="list-list">{lists}</div>
-    </div>
-  );
-};
+var Board = React.createClass({
+  render: function() {
+    return (
+      <div className="board">
+        <div className="board-name">{this.props.title}</div>
+        <form>
+          <input type="text" onChange={this.props.onAddInputChange}/>
+          <button type="submit" onClick={this.props.onAddClick}>+</button>
+        </form>
+        <div className="list-list">{this.props.lists}</div>
+      </div>
+    );
+  }
+});
 
 var ListContainer = React.createClass({
   getInitialState: function () {
@@ -46,7 +77,6 @@ var ListContainer = React.createClass({
     testCards.push(<Card description={this.state.text} id={this.state.counter} onDelClick={this.onDelClick} />)
 
     var tempCounter = this.state.counter + 1;
-    console.log('testCards', testCards);
     this.setState({cards: testCards,
                    text: '', counter: tempCounter});
   },
@@ -107,6 +137,5 @@ var Card = React.createClass({
 
 /* Runs when page is done loading. */
 document.addEventListener('DOMContentLoaded', function () {
-  ReactDOM.render(<Board title="Trello Board"
-                    listTitle={['List 1', 'List 2', 'List 3', 'List 4', 'List 5']}/>, document.getElementById('app'));
+  ReactDOM.render(<Board />, document.getElementById('app'));
 });

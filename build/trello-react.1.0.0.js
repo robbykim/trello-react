@@ -50,28 +50,69 @@
 	var ReactDOM = __webpack_require__(33);
 	
 	/* ------- Components --------- */
-	var Board = function Board(props) {
+	var BoardContainer = React.createClass({
+	  displayName: 'BoardContainer',
 	
-	  var lists = [];
-	  for (var i = 0; i < props.listTitle.length; i++) {
-	    lists.push(React.createElement(ListContainer, { title: props.listTitle[i] }));
+	  getInitialState: function getInitialState() {
+	    return {
+	      listTitle: '',
+	      lists: [],
+	      counter: 0
+	    };
+	  },
+	  onAddInputChange: function onAddInputChange(event) {
+	    this.setState({ listTitle: event.target.value });
+	  },
+	  onAddClick: function onAddClick(event) {
+	    event.preventDefault();
+	    var tempLists = this.state.lists.slice();
+	    tempLists.push(React.createElement(ListContainer, { title: this.state.listTitle, id: this.state.counter }));
+	    var tempCounter = this.state.counter + 1;
+	    this.setState({
+	      listTitle: '',
+	      lists: tempLists,
+	      counter: tempCounter });
+	  },
+	  render: function render() {
+	    return React.createElement(Board, { title: 'Trello Board',
+	      onAddInputChange: this.onAddInputChange,
+	      onAddClick: this.onAddClick,
+	      lists: this.state.lists,
+	      listTitle: this.state.listTitle
+	    });
 	  }
+	});
 	
-	  return React.createElement(
-	    'div',
-	    { className: 'board' },
-	    React.createElement(
+	var Board = React.createClass({
+	  displayName: 'Board',
+	
+	  render: function render() {
+	    return React.createElement(
 	      'div',
-	      { className: 'board-name' },
-	      props.title
-	    ),
-	    React.createElement(
-	      'div',
-	      { className: 'list-list' },
-	      lists
-	    )
-	  );
-	};
+	      { className: 'board' },
+	      React.createElement(
+	        'div',
+	        { className: 'board-name' },
+	        this.props.title
+	      ),
+	      React.createElement(
+	        'form',
+	        null,
+	        React.createElement('input', { type: 'text', onChange: this.props.onAddInputChange }),
+	        React.createElement(
+	          'button',
+	          { type: 'submit', onClick: this.props.onAddClick },
+	          '+'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'list-list' },
+	        this.props.lists
+	      )
+	    );
+	  }
+	});
 	
 	var ListContainer = React.createClass({
 	  displayName: 'ListContainer',
@@ -104,7 +145,6 @@
 	    testCards.push(React.createElement(Card, { description: this.state.text, id: this.state.counter, onDelClick: this.onDelClick }));
 	
 	    var tempCounter = this.state.counter + 1;
-	    console.log('testCards', testCards);
 	    this.setState({ cards: testCards,
 	      text: '', counter: tempCounter });
 	  },
@@ -188,8 +228,7 @@
 	
 	/* Runs when page is done loading. */
 	document.addEventListener('DOMContentLoaded', function () {
-	  ReactDOM.render(React.createElement(Board, { title: 'Trello Board',
-	    listTitle: ['List 1', 'List 2', 'List 3', 'List 4', 'List 5'] }), document.getElementById('app'));
+	  ReactDOM.render(React.createElement(Board, null), document.getElementById('app'));
 	});
 
 /***/ },
