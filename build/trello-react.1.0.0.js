@@ -66,7 +66,7 @@
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
 	    var tempLists = this.state.lists.slice();
-	    tempLists.push(React.createElement(ListContainer, { title: this.state.listTitle, id: this.state.counter }));
+	    tempLists.push(React.createElement(ListContainer, { key: this.state.counter, title: this.state.listTitle, id: this.state.counter }));
 	    var tempCounter = this.state.counter + 1;
 	    this.setState({
 	      listTitle: '',
@@ -98,7 +98,7 @@
 	      React.createElement(
 	        'form',
 	        null,
-	        React.createElement('input', { type: 'text', onChange: this.props.onAddInputChange }),
+	        React.createElement('input', { type: 'text', value: this.props.value, onChange: this.props.onAddInputChange }),
 	        React.createElement(
 	          'button',
 	          { type: 'submit', onClick: this.props.onAddClick },
@@ -142,7 +142,7 @@
 	    event.preventDefault();
 	    console.log('this.state.text', this.state.text);
 	    var testCards = this.state.cards.slice();
-	    testCards.push(React.createElement(Card, { description: this.state.text, id: this.state.counter, onDelClick: this.onDelClick }));
+	    testCards.push(React.createElement(Card, { key: this.state.counter, description: this.state.text, id: this.state.counter, onDelClick: this.onDelClick }));
 	
 	    var tempCounter = this.state.counter + 1;
 	    this.setState({ cards: testCards,
@@ -199,6 +199,7 @@
 	    };
 	  },
 	  onClick: function onClick() {
+	    console.log('onClick for ', this.props.description);
 	    this.setState({
 	      highlight: !this.state.highlight
 	    });
@@ -208,6 +209,7 @@
 	    this.props.onDelClick(event, this.props.id);
 	  },
 	  render: function render() {
+	    console.log(this.props.description, ' is highlighted ', this.state.highlight);
 	    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
 	    return React.createElement(
 	      'div',
@@ -228,7 +230,7 @@
 	
 	/* Runs when page is done loading. */
 	document.addEventListener('DOMContentLoaded', function () {
-	  ReactDOM.render(React.createElement(Board, null), document.getElementById('app'));
+	  ReactDOM.render(React.createElement(BoardContainer, null), document.getElementById('app'));
 	});
 
 /***/ },

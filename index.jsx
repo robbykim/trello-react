@@ -16,7 +16,7 @@ var BoardContainer = React.createClass({
   onAddClick: function (event) {
     event.preventDefault();
     var tempLists = this.state.lists.slice();
-    tempLists.push(<ListContainer title={this.state.listTitle} id={this.state.counter}/>);
+    tempLists.push(<ListContainer key={this.state.counter} title={this.state.listTitle} id={this.state.counter}/>);
     var tempCounter = this.state.counter + 1;
     this.setState({
       listTitle: '',
@@ -39,7 +39,7 @@ var Board = React.createClass({
       <div className="board">
         <div className="board-name">{this.props.title}</div>
         <form>
-          <input type="text" onChange={this.props.onAddInputChange}/>
+          <input type="text" value={this.props.value} onChange={this.props.onAddInputChange}/>
           <button type="submit" onClick={this.props.onAddClick}>+</button>
         </form>
         <div className="list-list">{this.props.lists}</div>
@@ -74,7 +74,7 @@ var ListContainer = React.createClass({
     event.preventDefault();
     console.log('this.state.text', this.state.text);
     var testCards = this.state.cards.slice();
-    testCards.push(<Card description={this.state.text} id={this.state.counter} onDelClick={this.onDelClick} />)
+    testCards.push(<Card key={this.state.counter} description={this.state.text} id={this.state.counter} onDelClick={this.onDelClick} />)
 
     var tempCounter = this.state.counter + 1;
     this.setState({cards: testCards,
@@ -115,6 +115,7 @@ var Card = React.createClass({
         };
     },
    onClick: function() {
+      console.log('onClick for ', this.props.description);
         this.setState({
             highlight: !this.state.highlight
         });
@@ -124,6 +125,7 @@ var Card = React.createClass({
       this.props.onDelClick(event, this.props.id);
     },
     render: function() {
+      console.log(this.props.description, ' is highlighted ', this.state.highlight);
       var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
       return (
         <div className={classes} onClick={this.onClick}>
@@ -137,5 +139,5 @@ var Card = React.createClass({
 
 /* Runs when page is done loading. */
 document.addEventListener('DOMContentLoaded', function () {
-  ReactDOM.render(<Board />, document.getElementById('app'));
+  ReactDOM.render(<BoardContainer />, document.getElementById('app'));
 });
