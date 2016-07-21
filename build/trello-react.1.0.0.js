@@ -78,7 +78,7 @@
 	      onAddInputChange: this.onAddInputChange,
 	      onAddClick: this.onAddClick,
 	      lists: this.state.lists,
-	      listTitle: this.state.listTitle
+	      value: this.state.listTitle
 	    });
 	  }
 	});
