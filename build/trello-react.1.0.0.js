@@ -125,12 +125,10 @@
 	    };
 	  },
 	
-	  onDelClick: function onDelClick(event, id) {
+	  onDelClick: function onDelClick(id) {
 	    var tempCardsArray = this.state.cards.filter(function (card) {
-	      console.log('card.props.id', card.props.id);
 	      return id !== card.props.id;
 	    });
-	    console.log('id', id);
 	    this.setState({ cards: tempCardsArray });
 	  },
 	
@@ -140,10 +138,8 @@
 	
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
-	    console.log('this.state.text', this.state.text);
 	    var testCards = this.state.cards.slice();
 	    testCards.push(React.createElement(Card, { description: this.state.text, id: this.state.counter, onDelClick: this.onDelClick }));
-	
 	    var tempCounter = this.state.counter + 1;
 	    this.setState({ cards: testCards,
 	      text: '', counter: tempCounter });
@@ -160,8 +156,7 @@
 	
 	var List = React.createClass({
 	  displayName: 'List',
-	
-	
+
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -203,15 +198,13 @@
 	      highlight: !this.state.highlight
 	    });
 	  },
-	  onDelete: function onDelete(event) {
-	    event.stopPropagation();
-	    this.props.onDelClick(event, this.props.id);
-	  },
 	  render: function render() {
+	    var _this = this;
+
 	    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
 	    return React.createElement(
 	      'div',
-	      { className: classes, onClick: this.onClick },
+	      { className: classes, key: this.props.id, onClick: this.onClick },
 	      React.createElement(
 	        'div',
 	        { className: 'card-description' },
@@ -219,7 +212,9 @@
 	      ),
 	      React.createElement(
 	        'button',
-	        { onClick: this.onDelete },
+	        { onClick: function onClick() {
+	            return _this.props.onDelClick(_this.props.id);
+	          } },
 	        '-'
 	      )
 	    );
@@ -228,7 +223,7 @@
 	
 	/* Runs when page is done loading. */
 	document.addEventListener('DOMContentLoaded', function () {
-	  ReactDOM.render(React.createElement(Board, null), document.getElementById('app'));
+	  ReactDOM.render(React.createElement(BoardContainer, null), document.getElementById('app'));
 	});
 
 /***/ },

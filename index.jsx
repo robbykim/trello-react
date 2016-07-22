@@ -21,6 +21,8 @@ var BoardContainer = React.createClass({
     this.setState({
       listTitle: '',
       lists: tempLists,
+
+
       counter: tempCounter});
   },
   render: function () {
@@ -57,12 +59,10 @@ var ListContainer = React.createClass({
     }
   },
 
-  onDelClick: function (event, id) {
+  onDelClick: function (id) {
     var tempCardsArray = this.state.cards.filter(function(card) {
-      console.log('card.props.id', card.props.id);
       return id !== card.props.id;
     });
-    console.log('id', id);
     this.setState({cards: tempCardsArray});
   },
 
@@ -72,10 +72,8 @@ var ListContainer = React.createClass({
 
   onAddClick: function (event) {
     event.preventDefault();
-    console.log('this.state.text', this.state.text);
     var testCards = this.state.cards.slice();
     testCards.push(<Card description={this.state.text} id={this.state.counter} onDelClick={this.onDelClick} />)
-
     var tempCounter = this.state.counter + 1;
     this.setState({cards: testCards,
                    text: '', counter: tempCounter});
@@ -91,7 +89,6 @@ var ListContainer = React.createClass({
 });
 
 var List = React.createClass({
-
   render: function() {
     return (
       <div className="list">
@@ -109,33 +106,29 @@ var List = React.createClass({
 });
 
 var Card = React.createClass({
-   getInitialState: function() {
-        return {
-            highlight: false
-        };
-    },
-   onClick: function() {
-        this.setState({
-            highlight: !this.state.highlight
-        });
-    },
-    onDelete: function(event) {
-      event.stopPropagation();
-      this.props.onDelClick(event, this.props.id);
-    },
-    render: function() {
-      var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
-      return (
-        <div className={classes} onClick={this.onClick}>
-          <div className="card-description">{this.props.description}</div>
-          <button onClick={this.onDelete}>-</button>
-        </div>
-      );
+  getInitialState: function() {
+    return {
+      highlight: false
+    };
+  },
+  onClick: function() {
+    this.setState({
+      highlight: !this.state.highlight
+    });
+  },
+  render: function() {
+    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
+    return (
+      <div className={classes} key={this.props.id} onClick={this.onClick}>
+        <div className="card-description">{this.props.description}</div>
+        <button onClick={() => this.props.onDelClick(this.props.id)}>-</button>
+      </div>
+    );
   },
 });
 
 
 /* Runs when page is done loading. */
 document.addEventListener('DOMContentLoaded', function () {
-  ReactDOM.render(<Board />, document.getElementById('app'));
+  ReactDOM.render(<BoardContainer />, document.getElementById('app'));
 });
