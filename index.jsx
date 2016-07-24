@@ -15,15 +15,20 @@ var BoardContainer = React.createClass({
   },
   onAddClick: function (event) {
     event.preventDefault();
-    var tempLists = this.state.lists.slice();
-    tempLists.push(<ListContainer title={this.state.listTitle} id={this.state.counter}/>);
-    var tempCounter = this.state.counter + 1;
-    this.setState({
-      listTitle: '',
-      lists: tempLists,
+    if (this.state.listTitle !== '') {
+      var listObj = {
+        title: this.state.listTitle,
+        counter: this.state.counter
+      }
 
-
-      counter: tempCounter});
+      var tempLists = this.state.lists.slice();
+      tempLists.push(listObj);
+      var tempCounter = this.state.counter + 1;
+      this.setState({
+        listTitle: '',
+        lists: tempLists,
+        counter: tempCounter});
+    }
   },
   render: function () {
     return <Board title="Trello Board"
@@ -31,12 +36,19 @@ var BoardContainer = React.createClass({
       onAddClick={this.onAddClick}
       lists={this.state.lists}
       listTitle={this.state.listTitle}
+      key={this.state.counter}
       />
   }
 });
 
 var Board = React.createClass({
   render: function() {
+    var listArr = [];
+
+    this.props.lists.forEach(function(list) {
+      listArr.push(<ListContainer title={list.title} id={list.counter} />)
+    });
+
     return (
       <div className="board">
         <div className="board-name">{this.props.title}</div>
@@ -44,7 +56,7 @@ var Board = React.createClass({
           <input type="text" onChange={this.props.onAddInputChange}/>
           <button type="submit" onClick={this.props.onAddClick}>+</button>
         </form>
-        <div className="list-list">{this.props.lists}</div>
+        <div className="list-list">{listArr}</div>
       </div>
     );
   }
@@ -55,8 +67,15 @@ var ListContainer = React.createClass({
     return {
       cards: [],
       text: '',
-      counter: 0
+      counter: 0,
+      highlight: false
     }
+  },
+
+  onHighlight: function() {
+    this.setState({
+      highlight: !this.state.highlight
+    });
   },
 
   onDelClick: function (id) {
@@ -75,17 +94,19 @@ var ListContainer = React.createClass({
   onAddClick: function (event) {
     event.preventDefault();
 
-    var cardObj = {
-      description: this.state.text,
-      counter: this.state.counter
-    }
+    if (this.state.text !== '') {
+      var cardObj = {
+        description: this.state.text,
+        counter: this.state.counter
+      }
 
-    var testCards = this.state.cards.slice();
-    testCards.push(cardObj);
-    var tempCounter = this.state.counter + 1;
-    this.setState({cards: testCards,
-                   text: '',
-                   counter: tempCounter});
+      var testCards = this.state.cards.slice();
+      testCards.push(cardObj);
+      var tempCounter = this.state.counter + 1;
+      this.setState({cards: testCards,
+                     text: '',
+                     counter: tempCounter});
+    }
   },
 
   render: function () {
@@ -94,20 +115,25 @@ var ListContainer = React.createClass({
       value={this.state.text}
       onAddClick={this.onAddClick}
       onDelClick={this.onDelClick}
-      onAddInput={this.onAddInput} />
+      onAddInput={this.onAddInput}
+      onHighlight={this.onHighlight}
+      highlight={this.state.highlight} />
   }
 });
 
 var List = React.createClass({
   render: function() {
     var cardsArr = [];
-    var delClick = this.props.onDelClick;
-    this.props.cards.forEach(function(card) {
-      cardsArr.push(<Card id={card.counter}
-                          description={card.description}
-                          onDelClick={delClick}/>
+
+    for (var i = 0; i < this.props.cards.length; i++) {
+      cardsArr.push(<Card id={this.props.cards[i].counter}
+                          description={this.props.cards[i].description}
+                          onDelClick={this.props.onDelClick}
+                          onHighlight={this.props.onHighlight}
+                          highlight={this.props.highlight} />
       );
-    });
+    }
+
     return (
       <div className="list">
         <div className="list-title">{this.props.title}</div>
@@ -124,20 +150,10 @@ var List = React.createClass({
 });
 
 var Card = React.createClass({
-  getInitialState: function() {
-    return {
-      highlight: false
-    };
-  },
-  onClick: function() {
-    this.setState({
-      highlight: !this.state.highlight
-    });
-  },
   render: function() {
-    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
+    var classes = 'card ' + (this.props.highlight ? 'highlight' : '');
     return (
-      <div className={classes} key={this.props.id} onClick={this.onClick}>
+      <div className={classes} key={this.props.id} onClick={this.props.onHighlight}>
         <div className="card-description">{this.props.description}</div>
         <button onClick={() => this.props.onDelClick(this.props.id)}>-</button>
       </div>

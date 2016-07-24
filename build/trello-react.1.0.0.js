@@ -65,21 +65,28 @@
 	  },
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
-	    var tempLists = this.state.lists.slice();
-	    tempLists.push(React.createElement(ListContainer, { title: this.state.listTitle, id: this.state.counter }));
-	    var tempCounter = this.state.counter + 1;
-	    this.setState({
-	      listTitle: '',
-	      lists: tempLists,
+	    if (this.state.listTitle !== '') {
+	      var listObj = {
+	        title: this.state.listTitle,
+	        counter: this.state.counter
+	      };
 
-	      counter: tempCounter });
+	      var tempLists = this.state.lists.slice();
+	      tempLists.push(listObj);
+	      var tempCounter = this.state.counter + 1;
+	      this.setState({
+	        listTitle: '',
+	        lists: tempLists,
+	        counter: tempCounter });
+	    }
 	  },
 	  render: function render() {
 	    return React.createElement(Board, { title: 'Trello Board',
 	      onAddInputChange: this.onAddInputChange,
 	      onAddClick: this.onAddClick,
 	      lists: this.state.lists,
-	      listTitle: this.state.listTitle
+	      listTitle: this.state.listTitle,
+	      key: this.state.counter
 	    });
 	  }
 	});
@@ -88,6 +95,12 @@
 	  displayName: 'Board',
 	
 	  render: function render() {
+	    var listArr = [];
+
+	    this.props.lists.forEach(function (list) {
+	      listArr.push(React.createElement(ListContainer, { title: list.title, id: list.counter }));
+	    });
+
 	    return React.createElement(
 	      'div',
 	      { className: 'board' },
@@ -109,7 +122,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'list-list' },
-	        this.props.lists
+	        listArr
 	      )
 	    );
 	  }
@@ -122,10 +135,17 @@
 	    return {
 	      cards: [],
 	      text: '',
-	      counter: 0
+	      counter: 0,
+	      highlight: false
 	    };
 	  },
 	
+	  onHighlight: function onHighlight() {
+	    this.setState({
+	      highlight: !this.state.highlight
+	    });
+	  },
+
 	  onDelClick: function onDelClick(id) {
 	    var tempCardsArray = this.state.cards.filter(function (card) {
 	      return id !== card.counter;
@@ -142,17 +162,19 @@
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
 
-	    var cardObj = {
-	      description: this.state.text,
-	      counter: this.state.counter
-	    };
+	    if (this.state.text !== '') {
+	      var cardObj = {
+	        description: this.state.text,
+	        counter: this.state.counter
+	      };
 
-	    var testCards = this.state.cards.slice();
-	    testCards.push(cardObj);
-	    var tempCounter = this.state.counter + 1;
-	    this.setState({ cards: testCards,
-	      text: '',
-	      counter: tempCounter });
+	      var testCards = this.state.cards.slice();
+	      testCards.push(cardObj);
+	      var tempCounter = this.state.counter + 1;
+	      this.setState({ cards: testCards,
+	        text: '',
+	        counter: tempCounter });
+	    }
 	  },
 	
 	  render: function render() {
@@ -161,7 +183,9 @@
 	      value: this.state.text,
 	      onAddClick: this.onAddClick,
 	      onDelClick: this.onDelClick,
-	      onAddInput: this.onAddInput });
+	      onAddInput: this.onAddInput,
+	      onHighlight: this.onHighlight,
+	      highlight: this.state.highlight });
 	  }
 	});
 	
@@ -170,12 +194,15 @@
 
 	  render: function render() {
 	    var cardsArr = [];
-	    var delClick = this.props.onDelClick;
-	    this.props.cards.forEach(function (card) {
-	      cardsArr.push(React.createElement(Card, { id: card.counter,
-	        description: card.description,
-	        onDelClick: delClick }));
-	    });
+
+	    for (var i = 0; i < this.props.cards.length; i++) {
+	      cardsArr.push(React.createElement(Card, { id: this.props.cards[i].counter,
+	        description: this.props.cards[i].description,
+	        onDelClick: this.props.onDelClick,
+	        onHighlight: this.props.onHighlight,
+	        highlight: this.props.highlight }));
+	    }
+
 	    return React.createElement(
 	      'div',
 	      { className: 'list' },
@@ -205,24 +232,14 @@
 	
 	var Card = React.createClass({
 	  displayName: 'Card',
-	
-	  getInitialState: function getInitialState() {
-	    return {
-	      highlight: false
-	    };
-	  },
-	  onClick: function onClick() {
-	    this.setState({
-	      highlight: !this.state.highlight
-	    });
-	  },
+
 	  render: function render() {
 	    var _this = this;
 
-	    var classes = 'card ' + (this.state.highlight ? 'highlight' : '');
+	    var classes = 'card ' + (this.props.highlight ? 'highlight' : '');
 	    return React.createElement(
 	      'div',
-	      { className: classes, key: this.props.id, onClick: this.onClick },
+	      { className: classes, key: this.props.id, onClick: this.props.onHighlight },
 	      React.createElement(
 	        'div',
 	        { className: 'card-description' },
