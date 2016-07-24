@@ -53,51 +53,69 @@ var Board = React.createClass({
 var ListContainer = React.createClass({
   getInitialState: function () {
     return {
-      text: '',
       cards: [],
+      text: '',
       counter: 0
     }
   },
 
   onDelClick: function (id) {
     var tempCardsArray = this.state.cards.filter(function(card) {
-      return id !== card.props.id;
+      return id !== card.counter;
     });
     this.setState({cards: tempCardsArray});
   },
 
-  onAddInputChange: function (event) {
-    this.setState({text: event.target.value})
+  onAddInput: function (event) {
+    this.setState({
+      text: event.target.value
+    });
   },
 
   onAddClick: function (event) {
     event.preventDefault();
+
+    var cardObj = {
+      description: this.state.text,
+      counter: this.state.counter
+    }
+
     var testCards = this.state.cards.slice();
-    testCards.push(<Card description={this.state.text} id={this.state.counter} onDelClick={this.onDelClick} />)
+    testCards.push(cardObj);
     var tempCounter = this.state.counter + 1;
     this.setState({cards: testCards,
-                   text: '', counter: tempCounter});
+                   text: '',
+                   counter: tempCounter});
   },
 
   render: function () {
     return <List title={this.props.title}
       cards={this.state.cards}
       value={this.state.text}
-      onAddInputChange={this.onAddInputChange}
-      onAddClick={this.onAddClick} />
+      onAddClick={this.onAddClick}
+      onDelClick={this.onDelClick}
+      onAddInput={this.onAddInput} />
   }
 });
 
 var List = React.createClass({
   render: function() {
+    var cardsArr = [];
+    var delClick = this.props.onDelClick;
+    this.props.cards.forEach(function(card) {
+      cardsArr.push(<Card id={card.counter}
+                          description={card.description}
+                          onDelClick={delClick}/>
+      );
+    });
     return (
       <div className="list">
         <div className="list-title">{this.props.title}</div>
         <div className="card-holder">
-          {this.props.cards}
+          {cardsArr}
         </div>
         <form>
-          <input type="text" value={this.props.value} onChange={this.props.onAddInputChange} />
+          <input type="text" value={this.props.value} onChange={this.props.onAddInput} />
           <button type="submit" onClick={this.props.onAddClick}>+</button>
         </form>
       </div>

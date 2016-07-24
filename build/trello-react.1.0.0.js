@@ -71,6 +71,7 @@
 	    this.setState({
 	      listTitle: '',
 	      lists: tempLists,
+
 	      counter: tempCounter });
 	  },
 	  render: function render() {
@@ -119,38 +120,48 @@
 	
 	  getInitialState: function getInitialState() {
 	    return {
-	      text: '',
 	      cards: [],
+	      text: '',
 	      counter: 0
 	    };
 	  },
 	
 	  onDelClick: function onDelClick(id) {
 	    var tempCardsArray = this.state.cards.filter(function (card) {
-	      return id !== card.props.id;
+	      return id !== card.counter;
 	    });
 	    this.setState({ cards: tempCardsArray });
 	  },
 	
-	  onAddInputChange: function onAddInputChange(event) {
-	    this.setState({ text: event.target.value });
+	  onAddInput: function onAddInput(event) {
+	    this.setState({
+	      text: event.target.value
+	    });
 	  },
 	
 	  onAddClick: function onAddClick(event) {
 	    event.preventDefault();
+
+	    var cardObj = {
+	      description: this.state.text,
+	      counter: this.state.counter
+	    };
+
 	    var testCards = this.state.cards.slice();
-	    testCards.push(React.createElement(Card, { description: this.state.text, id: this.state.counter, onDelClick: this.onDelClick }));
+	    testCards.push(cardObj);
 	    var tempCounter = this.state.counter + 1;
 	    this.setState({ cards: testCards,
-	      text: '', counter: tempCounter });
+	      text: '',
+	      counter: tempCounter });
 	  },
 	
 	  render: function render() {
 	    return React.createElement(List, { title: this.props.title,
 	      cards: this.state.cards,
 	      value: this.state.text,
-	      onAddInputChange: this.onAddInputChange,
-	      onAddClick: this.onAddClick });
+	      onAddClick: this.onAddClick,
+	      onDelClick: this.onDelClick,
+	      onAddInput: this.onAddInput });
 	  }
 	});
 	
@@ -158,6 +169,13 @@
 	  displayName: 'List',
 
 	  render: function render() {
+	    var cardsArr = [];
+	    var delClick = this.props.onDelClick;
+	    this.props.cards.forEach(function (card) {
+	      cardsArr.push(React.createElement(Card, { id: card.counter,
+	        description: card.description,
+	        onDelClick: delClick }));
+	    });
 	    return React.createElement(
 	      'div',
 	      { className: 'list' },
@@ -169,12 +187,12 @@
 	      React.createElement(
 	        'div',
 	        { className: 'card-holder' },
-	        this.props.cards
+	        cardsArr
 	      ),
 	      React.createElement(
 	        'form',
 	        null,
-	        React.createElement('input', { type: 'text', value: this.props.value, onChange: this.props.onAddInputChange }),
+	        React.createElement('input', { type: 'text', value: this.props.value, onChange: this.props.onAddInput }),
 	        React.createElement(
 	          'button',
 	          { type: 'submit', onClick: this.props.onAddClick },
