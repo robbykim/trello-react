@@ -47,8 +47,7 @@ var BoardContainer = React.createClass({
              onAddClick={this.onAddClick}
              lists={this.state.lists}
              title={this.state.title}
-             key={this.state.counter}
-             />
+             key={this.state.counter} />
   }
 });
 
