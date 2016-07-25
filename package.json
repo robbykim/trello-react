@@ -5,6 +5,7 @@
   "main": "js/index.jsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "http-server build/",
     "mkdir": "mkdir -p build",
     "build": "npm run clean && npm run mkdir && npm run build:html && npm run build:js",
     "watch": "npm run watch:html & npm run watch:js",
@@ -32,6 +33,9 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "chokidar-cli": "^1.2.0",
+    "eslint": "^3.1.1",
+    "eslint-plugin-react": "^5.2.2",
+    "http-server": "^0.9.0",
     "webpack": "^1.13.1"
   },
   "dependencies": {

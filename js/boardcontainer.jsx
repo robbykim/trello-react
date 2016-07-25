@@ -3,21 +3,17 @@ var Board = require('./board');
 
 /*---------- CREATING LISTS TO RENDER THE BOARD COMPONENT ----------*/
 var BoardContainer = React.createClass({
-  getInitialState: function () {
-    return {
-      title: '',
-      lists: [],
-      counter: 0
-    }
+  getInitialState: function() {
+    return {title: '', lists: [], counter: 0};
   },
 
   // TRACKS CHANGES IN THE INPUT FIELD
-  onAddInputChange: function (event) {
-    this.setState({title: event.target.value})
+  onAddInputChange: function(event) {
+    this.setState({title: event.target.value});
   },
 
   // LISTENER FOR CLICKING ON '+' BUTTON
-  onAddClick: function (event) {
+  onAddClick: function(event) {
     event.preventDefault();
 
     // PREVENTS EMPTY FIELD INPUTS
@@ -27,7 +23,7 @@ var BoardContainer = React.createClass({
       var listObj = {
         title: this.state.title,
         counter: this.state.counter
-      }
+      };
 
       // DEEP COPY OF STATE 'LISTS'
       var tempLists = this.state.lists.slice();
@@ -35,19 +31,13 @@ var BoardContainer = React.createClass({
 
       // DEEP COPY OF STATE 'COUNTER'
       var tempCounter = this.state.counter + 1;
-      this.setState({
-        title: '',
-        lists: tempLists,
-        counter: tempCounter});
+      this.setState({title: '', lists: tempLists, counter: tempCounter});
     }
   },
-  render: function () {
-    return <Board name="Trello Board"
-             onAddInputChange={this.onAddInputChange}
-             onAddClick={this.onAddClick}
-             lists={this.state.lists}
-             title={this.state.title}
-             key={this.state.counter} />
+  render: function() {
+    return <Board name="Trello Board" onAddInputChange={this.onAddInputChange}
+            onAddClick={this.onAddClick} lists={this.state.lists}
+            title={this.state.title} key={this.state.counter}/ >;
   }
 });
 
